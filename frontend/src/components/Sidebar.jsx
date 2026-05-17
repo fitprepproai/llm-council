@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import './Sidebar.css';
 
 export default function Sidebar({
@@ -10,15 +9,18 @@ export default function Sidebar({
   return (
     <div className="sidebar">
       <div className="sidebar-header">
-        <h1>LLM Council</h1>
+        <h1>Cognitive Council</h1>
+        <p className="sidebar-subtitle">Decision Intelligence</p>
         <button className="new-conversation-btn" onClick={onNewConversation}>
-          + New Conversation
+          + New Analysis
         </button>
       </div>
 
       <div className="conversation-list">
         {conversations.length === 0 ? (
-          <div className="no-conversations">No conversations yet</div>
+          <div className="no-conversations">
+            No analyses yet.<br />Start a new conversation to consult the council.
+          </div>
         ) : (
           conversations.map((conv) => (
             <div
@@ -29,10 +31,10 @@ export default function Sidebar({
               onClick={() => onSelectConversation(conv.id)}
             >
               <div className="conversation-title">
-                {conv.title || 'New Conversation'}
+                {conv.title || 'New Analysis'}
               </div>
               <div className="conversation-meta">
-                {conv.message_count} messages
+                {conv.message_count} {conv.message_count === 1 ? 'message' : 'messages'}
               </div>
             </div>
           ))

@@ -1,0 +1,141 @@
+.decompression-dash {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-bright);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.dash-header {
+  margin-bottom: 16px;
+}
+
+.dash-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-family: 'JetBrains Mono', monospace;
+  margin-bottom: 2px;
+}
+
+.dash-subtitle {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.dash-grid {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.tensions-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+
+.tensions-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-family: 'JetBrains Mono', monospace;
+  margin-bottom: 10px;
+}
+
+.tensions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tension-item {
+  padding: 10px;
+  background: var(--bg-surface);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
+
+.tension-agents {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.tension-agent {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.tension-vs {
+  font-size: 11px;
+  color: var(--text-dim);
+  font-style: italic;
+}
+
+.tension-description {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.alignment-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.alignment-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-family: 'JetBrains Mono', monospace;
+  margin-bottom: 10px;
+}
+
+.alignment-row {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.alignment-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.alignment-label {
+  font-size: 11px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.alignment-agents {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.alignment-agent {
+  font-size: 13px;
+  font-weight: 700;
+  padding: 3px 8px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}

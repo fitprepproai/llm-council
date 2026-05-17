@@ -1,6 +1,7 @@
 """OpenRouter API client for making LLM requests."""
 
 import httpx
+import asyncio
 from typing import List, Dict, Any, Optional
 from .config import OPENROUTER_API_KEY, OPENROUTER_API_URL
 
@@ -8,14 +9,16 @@ from .config import OPENROUTER_API_KEY, OPENROUTER_API_URL
 async def query_model(
     model: str,
     messages: List[Dict[str, str]],
+    system_prompt: Optional[str] = None,
     timeout: float = 120.0
 ) -> Optional[Dict[str, Any]]:
     """
     Query a single model via OpenRouter API.
 
     Args:
-        model: OpenRouter model identifier (e.g., "openai/gpt-4o")
+        model: OpenRouter model identifier (e.g., "anthropic/claude-sonnet-4.5")
         messages: List of message dicts with 'role' and 'content'
+        system_prompt: Optional system prompt to prepend
         timeout: Request timeout in seconds
 
     Returns:
@@ -26,9 +29,13 @@ async def query_model(
         "Content-Type": "application/json",
     }
 
+    full_messages = messages
+    if system_prompt:
+        full_messages = [{"role": "system", "content": system_prompt}] + messages
+
     payload = {
         "model": model,
-        "messages": messages,
+        "messages": full_messages,
     }
 
     try:
@@ -58,22 +65,32 @@ async def query_models_parallel(
     messages: List[Dict[str, str]]
 ) -> Dict[str, Optional[Dict[str, Any]]]:
     """
-    Query multiple models in parallel.
+    Query multiple models in parallel (legacy helper, kept for compatibility).
+    """
+    tasks = [query_model(model, messages) for model in models]
+    responses = await asyncio.gather(*tasks)
+    return {model: response for model, response in zip(models, responses)}
+
+
+async def query_agents_parallel(
+    agents: List[Dict[str, Any]],
+    messages: List[Dict[str, str]],
+    model: str
+) -> Dict[str, Optional[Dict[str, Any]]]:
+    """
+    Query multiple cognitive agents in parallel using the same base model but different system prompts.
 
     Args:
-        models: List of OpenRouter model identifiers
-        messages: List of message dicts to send to each model
+        agents: List of agent dicts, each with 'key' and 'system_prompt'
+        messages: List of message dicts to send to each agent
+        model: The base model to use for all agents
 
     Returns:
-        Dict mapping model identifier to response dict (or None if failed)
+        Dict mapping agent key to response dict (or None if failed)
     """
-    import asyncio
-
-    # Create tasks for all models
-    tasks = [query_model(model, messages) for model in models]
-
-    # Wait for all to complete
+    tasks = [
+        query_model(model, messages, agent.get('system_prompt'))
+        for agent in agents
+    ]
     responses = await asyncio.gather(*tasks)
-
-    # Map models to their responses
-    return {model: response for model, response in zip(models, responses)}
+    return {agent['key']: response for agent, response in zip(agents, responses)}

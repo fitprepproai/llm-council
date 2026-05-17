@@ -9,7 +9,7 @@ export default function Stage3({ finalResponse }) {
 
   return (
     <div className="stage stage3">
-      <h3 className="stage-title">Stage 3 — Decompression Report</h3>
+      <h3 className="stage-title">Stage 3 — Strategic Power Report</h3>
 
       {finalResponse.decompression_data && (
         <DecompressionDash decompressionData={finalResponse.decompression_data} />
@@ -17,7 +17,7 @@ export default function Stage3({ finalResponse }) {
 
       <div className="final-response">
         <div className="chairman-label">
-          Decompressor
+          The Strategist
         </div>
         <div className="final-text markdown-content">
           <ReactMarkdown>{finalResponse.response}</ReactMarkdown>

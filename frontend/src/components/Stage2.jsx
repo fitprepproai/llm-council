@@ -23,9 +23,9 @@ export default function Stage2({ rankings, labelToAgent, aggregateRankings }) {
 
   return (
     <div className="stage stage2">
-      <h3 className="stage-title">Stage 2 — Cross-Examination</h3>
+      <h3 className="stage-title">Stage 2 — Strategic Cross-Examination</h3>
       <p className="stage-description">
-        Each cognitive agent evaluates the others' analyses through its bias lens — anonymized during evaluation.
+        Each advisor challenges the others' analyses — anonymized during evaluation to prevent groupthink.
         Agent names shown in <strong>bold</strong> are for readability only.
       </p>
 

@@ -10,10 +10,10 @@ import {
 import './RadarChart.css';
 
 const AGENT_META = {
-  sentinel: { label: '🛡️ Threat', color: '#e74c3c' },
-  scout: { label: '🔭 Opportunity', color: '#2ecc71' },
-  historian: { label: '📚 Pattern', color: '#3498db' },
-  mirror: { label: '🪞 Familiarity', color: '#9b59b6' },
+  leverage: { label: '⚡ Leverage', color: '#f39c12' },
+  position: { label: '♟️ Power', color: '#e74c3c' },
+  architect: { label: '🏗️ Long Game', color: '#3498db' },
+  freedom: { label: '🔓 Freedom', color: '#2ecc71' },
 };
 
 const CustomTooltip = ({ active, payload }) => {
@@ -27,19 +27,19 @@ const CustomTooltip = ({ active, payload }) => {
   );
 };
 
-export default function AgentRadarChart({ compressionMap }) {
-  if (!compressionMap) return null;
+export default function AgentRadarChart({ powerMap }) {
+  if (!powerMap) return null;
 
   const data = Object.entries(AGENT_META).map(([key, meta]) => ({
     axis: meta.label,
-    value: Math.round((compressionMap[key]?.weight ?? 0) * 100),
+    value: Math.round((powerMap[key]?.weight ?? 0) * 100),
     fill: meta.color,
   }));
 
   return (
     <div className="radar-container">
-      <div className="radar-title">Compression Intensity</div>
-      <div className="radar-subtitle">How strongly each cognitive signal fired</div>
+      <div className="radar-title">Power Analysis</div>
+      <div className="radar-subtitle">Signal intensity per strategic lens</div>
       <ResponsiveContainer width="100%" height={280}>
         <RadarChart cx="50%" cy="50%" outerRadius="70%" data={data}>
           <PolarGrid stroke="rgba(255,255,255,0.08)" />

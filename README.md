@@ -1,43 +1,44 @@
-# Cognitive Council
+# Power Council
 
-> **"Karpathy built a council for better answers. This fork gives it a brain that works like ours actually does."**
+> **"Most people optimize within the prison. This tool shows you the door."**
 
-A fork of [karpathy/llm-council](https://github.com/karpathy/llm-council) that replaces generic multi-model deliberation with **cognitively specialized agents** modeled after how human emotional compression works in decision-making.
+A fork of [karpathy/llm-council](https://github.com/karpathy/llm-council) that transforms multi-model deliberation into a **strategic decision framework** grounded in Robert Greene's *48 Laws of Power* — focused specifically on the transition from compulsory labor to leverage, autonomy, and freedom.
 
-## The Core Idea
+## The Problem It Solves
 
-Emotions are ultra-compacted decision trees — lossy compressions of experience that enable fast action but introduce systematic bias. When you have a gut feeling about a decision, four distinct heuristics are usually firing at once:
+Most career and business decisions are evaluated on surface metrics: salary, title, prestige, growth. But these metrics optimize for position within the foot-soldier economy — the game where you compete harder for incremental advancement while trading more time for marginally more money.
 
-- 🛡️ **Sentinel** — "Something could go wrong" (threat detection, loss aversion)
-- 🔭 **Scout** — "This could be huge" (opportunity detection, novelty bias)
-- 📚 **Historian** — "I've seen this before" (pattern matching, base rates)
-- 🪞 **Mirror** — "Does this feel like us?" (familiarity bias, comfort reasoning)
+The Power Council analyzes every decision through four lenses that most people never consciously apply:
 
-The Cognitive Council runs all four of these lenses simultaneously, cross-examines them against each other, then produces a **Decompression Report** — a structured analysis of which instincts are firing, how calibrated they are for your specific decision, and where they conflict.
+- **⚡ Leverage Hunter** — Where is the compounding leverage? What in this situation can be owned, systematized, or made scarce? (Law 11: Make others dependent on you)
+- **♟️ Power Reader** — Who actually holds power here, what do they want, and how does each path affect the dependency ratio? (Law 3: Conceal your intentions; Law 33: Find each person's pressure point)
+- **🏗️ The Architect** — Where does each path lead in 5-10 years if followed consistently? Which options build toward ownership vs. higher rungs on the same ladder? (Law 29: Plan all the way to the end)
+- **🔓 Liberation Auditor** — Does this option actually increase your autonomy and leisure, or does it optimize within the trap? (Law 20: Do not commit to anyone; Law 34: Be royal in your own fashion)
 
 ## How It Works
 
-When you submit a decision or question, the pipeline runs three stages:
+Submit a decision, career move, or situation. Three stages run automatically:
 
-1. **Stage 1 — Cognitive Analysis.** All four agents analyze your input in parallel. Each uses the same underlying model (`claude-sonnet-4.5`) but with a distinct system prompt encoding its cognitive bias. You see four tab-views: Sentinel's threat analysis, Scout's opportunity map, Historian's precedent review, and Mirror's familiarity audit.
+1. **Stage 1 — Strategic Analysis.** All four advisors analyze your input in parallel. Each uses the same underlying model (`claude-sonnet-4.5`) but with a distinct system prompt encoding its power lens. Four tab-views: leverage map, power dynamics, long-game trajectory, liberation audit.
 
-2. **Stage 2 — Cross-Examination.** Each agent reviews the other three agents' anonymized analyses through its own bias lens — evaluating substance, over-compression, and what others missed. Rankings are extracted.
+2. **Stage 2 — Strategic Cross-Examination.** Each advisor critiques the other three's analyses — anonymized to prevent groupthink. Rankings extracted to see which lens identified the most actionable insight.
 
-3. **Stage 3 — Decompression Report.** A chairman model synthesizes everything into a structured report:
-   - **Decision Summary** — what the core decision actually is
-   - **Compression Map** — what each gut instinct is telling you and how well-calibrated it is (HIGH/MEDIUM/LOW signal quality)
-   - **Key Tensions** — where the lenses directly conflict and what that reveals
-   - **Decompressed Recommendation** — synthesized recommendation with explicit reasoning about which instincts it follows vs. overrides
-   - **What to Investigate** — 2-3 specific things to check before committing
+3. **Stage 3 — Strategic Power Report.** A Strategist synthesizes everything into:
+   - **Situation Assessment** — where you actually stand in the power hierarchy
+   - **Power Map** — one signal per lens with confidence rating (HIGH/MEDIUM/LOW)
+   - **The Liberation Vector** — which option most directly points toward owning your time
+   - **Strategic Recommendation** — concrete moves, not general direction
+   - **The 3 Power Moves** — actions that increase leverage regardless of which choice you make
 
-The report also renders a **Decision Intelligence Dashboard** with a radar chart showing compression intensity per lens and signal quality cards.
+   The report also renders a **Power Analysis Dashboard** with a radar chart showing signal intensity per lens, signal quality cards, and a **Liberation Score** (0–100%) measuring how directly the recommended path leads toward autonomy.
 
-## Example Decisions to Try
+## Example Decisions to Run
 
-- *"Should we migrate our analytics platform from Snowflake to Databricks? Costs growing 20% YoY, ML team wants it, data engineering team is skeptical. $500K budget, end-of-quarter deadline."*
-- *"We're evaluating a candidate with strong technical skills but the team has mixed feelings about culture fit."*
-- *"Our biggest client wants us to build a custom feature that would take 3 months. Should we do it?"*
-- *"Should we adopt an AI coding assistant for the engineering team?"*
+- *"I have a $120K job offer at a FAANG company and a $90K offer plus 0.5% equity at a 20-person startup. Which do I take?"*
+- *"My manager keeps blocking my promotion. I've been passed over twice. What do I do?"*
+- *"I want to start a consulting practice on the side. Should I tell my employer?"*
+- *"I'm 35, have $80K saved, and want to stop trading time for money within 5 years. What's the move?"*
+- *"My biggest client wants me to take on 3x the work at the same rate. How do I handle this?"*
 
 ## Setup
 
@@ -69,7 +70,7 @@ Get your API key at [openrouter.ai](https://openrouter.ai/).
 
 ### 3. Configure the Base Model (Optional)
 
-Edit `backend/config.py` to swap the underlying model all agents use:
+Edit `backend/config.py` to change the underlying model all advisors use:
 
 ```python
 COGNITIVE_BASE_MODEL = "anthropic/claude-sonnet-4.5"
@@ -106,7 +107,37 @@ Then open [http://localhost:5173](http://localhost:5173).
 uv run pytest
 ```
 
-Tests cover the parsing functions — decompression JSON extraction, ranking parsing, and aggregate score calculation — all of which run without API calls.
+Tests cover the parsing functions — strategic JSON extraction, ranking parsing, and aggregate score calculation — all without API calls.
+
+## Architecture
+
+```
+User Input (decision, career move, situation)
+    ↓
+Stage 1: 4 parallel queries → same model, 4 power-lens system prompts
+         [⚡ Leverage] [♟️ Power] [🏗️ Architect] [🔓 Liberation]
+    ↓
+Stage 2: Anonymized cross-examination → each advisor critiques the others
+    ↓
+Stage 3: The Strategist synthesizes → Strategic Power Report + JSON data
+    ↓
+Frontend: Power Analysis Dashboard
+         [Liberation Score meter] [Radar chart] [Signal quality cards]
+         [Strategic tensions] [Alignment summary]
+```
+
+All four advisors use the **same base model** differentiated entirely by system prompt. The intelligence is in the prompts, not model selection.
+
+## Intellectual Grounding
+
+The four advisors correspond to the most actionable themes in Robert Greene's *48 Laws of Power* as applied to economic freedom:
+
+| Advisor | Core Law(s) | The Question It Answers |
+|---------|-------------|------------------------|
+| Leverage Hunter | Law 11 (Make others dependent) | Where is the compounding leverage? |
+| Power Reader | Laws 1, 3, 5, 7, 33 | What is the hidden power game being played? |
+| The Architect | Law 29 (Plan to the end) | Where does this path actually lead? |
+| Liberation Auditor | Laws 20, 28, 34 | Does this increase or decrease your autonomy? |
 
 ## Tech Stack
 
@@ -114,20 +145,3 @@ Tests cover the parsing functions — decompression JSON extraction, ranking par
 - **Frontend:** React + Vite, Recharts (radar visualization), react-markdown
 - **Storage:** JSON files in `data/conversations/`
 - **Package Management:** uv (Python), npm (JavaScript)
-
-## Architecture
-
-```
-User Input
-    ↓
-Stage 1: 4 parallel queries → same model, 4 different system prompts
-         [🛡️ Sentinel] [🔭 Scout] [📚 Historian] [🪞 Mirror]
-    ↓
-Stage 2: Anonymized cross-examination → each agent critiques the others
-    ↓
-Stage 3: Chairman decompressor synthesizes report + JSON data block
-    ↓
-Frontend: Decompression dashboard (radar chart + signal cards + tensions)
-```
-
-The key architectural difference from the original: rather than querying multiple different LLMs, all four agents use the **same base model** differentiated entirely by system prompt. The insight lives in the prompts, not the models.

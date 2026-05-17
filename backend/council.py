@@ -1,4 +1,4 @@
-"""3-stage Cognitive Council orchestration."""
+"""3-stage Power Council orchestration — a 48 Laws of Power decision framework."""
 
 import asyncio
 import re
@@ -69,19 +69,19 @@ async def stage2_collect_rankings(
         for label, result in zip(labels, stage1_results)
     ])
 
-    ranking_prompt = f"""You are reviewing analyses from other cognitive agents examining the following decision:
+    ranking_prompt = f"""You are reviewing strategic analyses from other power advisors examining the following decision:
 
 Question: {user_query}
 
-Each analysis below comes from a different cognitive agent with a specific bias lens (anonymized):
+Each analysis below comes from a different strategic lens — leverage identification, power dynamics, long-game architecture, or liberation auditing (anonymized):
 
 {responses_text}
 
 Your task:
-1. Evaluate the SUBSTANCE of each analysis — is the reasoning sound? Are the claims supported?
-2. Identify where each analysis might be OVER-COMPRESSING (drawing conclusions too quickly, or letting cognitive bias dominate)
-3. Identify where each analysis surfaces something the others MISSED
-4. Rank the analyses by how much actionable, decompressed insight they provide
+1. Evaluate the STRATEGIC QUALITY of each analysis — is the reasoning sound? Does it identify real leverage or real constraints?
+2. Identify where each analysis might be MISSING THE POINT — focusing on surface features while missing the structural power dynamics
+3. Identify where each analysis surfaces something the others MISSED that could be decisive
+4. Rank the analyses by how much actionable strategic insight they provide toward gaining leverage and autonomy
 
 IMPORTANT: Your final ranking MUST be formatted EXACTLY as follows:
 - Start with the line "FINAL RANKING:" (all caps, with colon)
@@ -91,14 +91,14 @@ IMPORTANT: Your final ranking MUST be formatted EXACTLY as follows:
 
 Example format:
 
-Response A provides sharp threat identification but over-compresses on worst-case...
-Response B surfaces a genuinely overlooked opportunity with strong reasoning...
+Response A correctly identifies the leverage point but underestimates the political risk...
+Response B misses the structural trap and optimizes within it instead of escaping...
 
 FINAL RANKING:
-1. Response B
-2. Response A
+1. Response A
+2. Response B
 
-Now provide your cross-examination and ranking:"""
+Now provide your strategic cross-examination and ranking:"""
 
     messages = [{"role": "user", "content": ranking_prompt}]
     agents = _agent_list()
@@ -130,7 +130,7 @@ async def stage3_synthesize_final(
     stage2_results: List[Dict[str, Any]]
 ) -> Dict[str, Any]:
     """
-    Stage 3: The Decompressor synthesizes a structured decompression report.
+    Stage 3: The Strategist synthesizes a structured Strategic Power Report.
     """
     stage1_text = "\n\n".join([
         f"[{result['icon']} {result['name']} — {result['description']}]\n{result['response']}"
@@ -142,61 +142,61 @@ async def stage3_synthesize_final(
         for result in stage2_results
     ])
 
-    chairman_prompt = f"""You are the Decompressor — the conscious, deliberate reasoning layer that sits above the four cognitive compression agents. You have received:
+    chairman_prompt = f"""You are the Strategist — the synthesis layer integrating four power analysis frameworks to produce a concrete path toward leverage, autonomy, and freedom from compulsory labor.
 
-1. Four analyses of a decision, each from a different cognitive bias lens (Sentinel/Threat, Scout/Opportunity, Historian/Pattern, Mirror/Familiarity)
-2. Cross-examinations where each agent critiqued the others
+You have received four analyses of a decision from different strategic lenses:
+- ⚡ Leverage Hunter: identifies compounding assets, leverage points, linear vs. leveraged income
+- ♟️ Power Reader: maps power dynamics, hidden agendas, dependency ratios, political positioning
+- 🏗️ The Architect: traces long-game trajectories, path dependency, ownership thresholds
+- 🔓 Liberation Auditor: evaluates each option for autonomy delta, prestige traps, golden handcuffs
 
 Original Question: {user_query}
 
-STAGE 1 — Cognitive Analyses:
+STAGE 1 — Strategic Analyses:
 {stage1_text}
 
 STAGE 2 — Cross-Examinations:
 {stage2_text}
 
-Your job is to produce a DECOMPRESSION REPORT that helps the decision-maker understand not just WHAT to decide, but HOW their instincts would naturally steer them — and where those instincts are trustworthy vs. misleading.
+Produce a STRATEGIC POWER REPORT. Be direct and specific — this is the advice a trusted strategic advisor gives when they have no reason to sugarcoat.
 
-Structure your report as follows:
+## Situation Assessment
+Where is the decision-maker positioned in the power hierarchy right now? What leverage do they have vs. what they're missing?
 
-## Decision Summary
-A 2-3 sentence synthesis of the core decision and its key dimensions.
+## Power Map
+For each of the four lenses (Leverage, Power, Architecture, Liberation), give one sentence on what it sees and how confident we should be in that signal.
 
-## Compression Map
-For each cognitive lens, summarize:
-- The compressed signal (what the gut feeling would be)
-- The decompressed reality (what's actually driving that feeling)
-- Signal quality: HIGH (instinct is well-calibrated here), MEDIUM (partially useful but check the reasoning), or LOW (instinct is likely misleading here)
+## The Liberation Vector
+Which available option most directly points toward owning your time, reducing compulsory labor, and building compounding leverage? If none do this well, say so directly.
 
-## Key Tensions
-Where do the cognitive lenses directly conflict? What does each conflict reveal about the decision's real trade-offs?
+## Strategic Recommendation
+The concrete recommendation — what to do and what to negotiate for. Include specific moves, not just direction.
 
-## Decompressed Recommendation
-Your synthesized recommendation, with explicit acknowledgment of which compressed instincts it aligns with and which it overrides — and why.
+## The 3 Power Moves
+Three specific actions — executable regardless of which choice is made — that increase leverage and freedom. These run in parallel with whatever is decided.
 
-## What to Investigate
-2-3 specific things the decision-maker should look into before committing, based on where the cognitive analysis revealed the most uncertainty.
-
-After your report, output a JSON block tagged with ```json that contains:
+After your report, output a JSON block tagged with ```json:
 {{
-  "compression_map": {{
-    "sentinel": {{ "signal": "one sentence summary of threat signal", "quality": "HIGH|MEDIUM|LOW", "weight": 0.0 }},
-    "scout": {{ "signal": "one sentence summary of opportunity signal", "quality": "HIGH|MEDIUM|LOW", "weight": 0.0 }},
-    "historian": {{ "signal": "one sentence summary of pattern signal", "quality": "HIGH|MEDIUM|LOW", "weight": 0.0 }},
-    "mirror": {{ "signal": "one sentence summary of familiarity signal", "quality": "HIGH|MEDIUM|LOW", "weight": 0.0 }}
+  "power_map": {{
+    "leverage": {{ "signal": "one sentence summary", "quality": "HIGH|MEDIUM|LOW", "weight": 0.0 }},
+    "position": {{ "signal": "one sentence summary", "quality": "HIGH|MEDIUM|LOW", "weight": 0.0 }},
+    "architect": {{ "signal": "one sentence summary", "quality": "HIGH|MEDIUM|LOW", "weight": 0.0 }},
+    "freedom": {{ "signal": "one sentence summary", "quality": "HIGH|MEDIUM|LOW", "weight": 0.0 }}
   }},
+  "liberation_score": 0.0,
   "tensions": [
-    {{ "agent_a": "sentinel", "agent_b": "scout", "description": "brief description of tension" }}
+    {{ "agent_a": "leverage", "agent_b": "freedom", "description": "brief description of the tension" }}
   ],
-  "recommendation_alignment": {{
-    "aligns_with": ["historian"],
-    "overrides": ["sentinel"]
+  "strategic_alignment": {{
+    "aligns_with": ["leverage", "architect"],
+    "overrides": ["position"]
   }}
 }}
 
-Weight values should be between 0.0 and 1.0, representing how strongly each cognitive signal fires for this decision (not how reliable it is — a strongly firing LOW-quality signal still gets a high weight).
+liberation_score: 0.0 = this situation/recommended path is deep in the foot-soldier trap; 1.0 = clear path to owning your time and capital.
+weight: 0.0–1.0, how strongly each strategic signal fires for this specific decision.
 
-Provide your decompression report now:"""
+Provide your strategic power report now:"""
 
     messages = [{"role": "user", "content": chairman_prompt}]
     response = await query_model(CHAIRMAN_MODEL, messages)
@@ -204,7 +204,7 @@ Provide your decompression report now:"""
     if response is None:
         return {
             "model": CHAIRMAN_MODEL,
-            "response": "Error: Unable to generate decompression report.",
+            "response": "Error: Unable to generate strategic power report.",
             "decompression_data": None
         }
 

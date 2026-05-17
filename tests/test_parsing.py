@@ -7,26 +7,27 @@ from backend.council import parse_ranking_from_text, calculate_aggregate_ranking
 
 # --- decompression.py tests ---
 
-VALID_RESPONSE = """## Decision Summary
-A company is deciding whether to migrate from Snowflake to Databricks.
+VALID_RESPONSE = """## Situation Assessment
+A professional considering whether to take a VP role at a startup vs. staying at a big-tech company.
 
-## Compression Map
-Sentinel fires HIGH on migration risk.
+## Power Map
+Leverage fires HIGH on equity upside.
 
 ```json
 {
-  "compression_map": {
-    "sentinel": {"signal": "High migration risk", "quality": "HIGH", "weight": 0.8},
-    "scout": {"signal": "Unified ML workflow opportunity", "quality": "MEDIUM", "weight": 0.6},
-    "historian": {"signal": "Similar migrations often overrun budget", "quality": "HIGH", "weight": 0.7},
-    "mirror": {"signal": "DE team skepticism may be skill bias", "quality": "MEDIUM", "weight": 0.5}
+  "power_map": {
+    "leverage": {"signal": "Startup equity could be a 10x leverage event", "quality": "HIGH", "weight": 0.8},
+    "position": {"signal": "Big-tech brand still has residual power", "quality": "MEDIUM", "weight": 0.5},
+    "architect": {"signal": "Startup path builds toward ownership; big-tech path leads to higher wages", "quality": "HIGH", "weight": 0.7},
+    "freedom": {"signal": "Both paths are compulsory labor for at least 3-5 years", "quality": "MEDIUM", "weight": 0.6}
   },
+  "liberation_score": 0.55,
   "tensions": [
-    {"agent_a": "sentinel", "agent_b": "scout", "description": "Risk vs opportunity framing"}
+    {"agent_a": "leverage", "agent_b": "freedom", "description": "Equity upside requires more hours, not less"}
   ],
-  "recommendation_alignment": {
-    "aligns_with": ["historian", "mirror"],
-    "overrides": ["sentinel"]
+  "strategic_alignment": {
+    "aligns_with": ["leverage", "architect"],
+    "overrides": ["position"]
   }
 }
 ```
@@ -50,12 +51,13 @@ RESPONSE_INVALID_JSON = """Some text.
 def test_parse_decompression_json_valid():
     result = parse_decompression_json(VALID_RESPONSE)
     assert result is not None
-    assert "compression_map" in result
-    assert result["compression_map"]["sentinel"]["quality"] == "HIGH"
-    assert result["compression_map"]["scout"]["weight"] == 0.6
+    assert "power_map" in result
+    assert result["power_map"]["leverage"]["quality"] == "HIGH"
+    assert result["power_map"]["position"]["weight"] == 0.5
+    assert result["liberation_score"] == 0.55
     assert len(result["tensions"]) == 1
-    assert result["tensions"][0]["agent_a"] == "sentinel"
-    assert result["recommendation_alignment"]["aligns_with"] == ["historian", "mirror"]
+    assert result["tensions"][0]["agent_a"] == "leverage"
+    assert result["strategic_alignment"]["aligns_with"] == ["leverage", "architect"]
 
 
 def test_parse_decompression_json_missing():
@@ -76,9 +78,9 @@ def test_parse_decompression_json_empty_string():
 def test_strip_json_block_removes_block():
     result = strip_json_block(VALID_RESPONSE)
     assert "```json" not in result
-    assert "compression_map" not in result
-    assert "Decision Summary" in result
-    assert "Compression Map" in result
+    assert "power_map" not in result
+    assert "Situation Assessment" in result
+    assert "Power Map" in result
 
 
 def test_strip_json_block_no_block():
@@ -143,27 +145,27 @@ Overall this was a good set of responses."""
 
 def _make_label_to_agent():
     return {
-        "Response A": {"key": "sentinel", "name": "Sentinel", "icon": "🛡️", "color": "#e74c3c"},
-        "Response B": {"key": "scout", "name": "Scout", "icon": "🔭", "color": "#2ecc71"},
-        "Response C": {"key": "historian", "name": "Historian", "icon": "📚", "color": "#3498db"},
+        "Response A": {"key": "leverage", "name": "Leverage Hunter", "icon": "⚡", "color": "#f39c12"},
+        "Response B": {"key": "position", "name": "Power Reader", "icon": "♟️", "color": "#e74c3c"},
+        "Response C": {"key": "architect", "name": "The Architect", "icon": "🏗️", "color": "#3498db"},
     }
 
 
 def test_calculate_aggregate_rankings_basic():
     label_to_agent = _make_label_to_agent()
     stage2_results = [
-        {"agent": "sentinel", "name": "Sentinel", "icon": "🛡️", "color": "#e74c3c",
+        {"agent": "leverage", "name": "Leverage Hunter", "icon": "⚡", "color": "#f39c12",
          "ranking": "FINAL RANKING:\n1. Response B\n2. Response C\n3. Response A"},
-        {"agent": "scout", "name": "Scout", "icon": "🔭", "color": "#2ecc71",
+        {"agent": "position", "name": "Power Reader", "icon": "♟️", "color": "#e74c3c",
          "ranking": "FINAL RANKING:\n1. Response B\n2. Response A\n3. Response C"},
-        {"agent": "historian", "name": "Historian", "icon": "📚", "color": "#3498db",
+        {"agent": "architect", "name": "The Architect", "icon": "🏗️", "color": "#3498db",
          "ranking": "FINAL RANKING:\n1. Response C\n2. Response B\n3. Response A"},
     ]
     result = calculate_aggregate_rankings(stage2_results, label_to_agent)
     assert len(result) == 3
-    # scout (Response B) ranked 1st twice, 2nd once → avg 1.33
-    scout = next(r for r in result if r["agent"] == "scout")
-    assert scout["average_rank"] == round((1 + 1 + 2) / 3, 2)
+    # position (Response B) ranked 1st twice, 2nd once → avg 1.33
+    pos = next(r for r in result if r["agent"] == "position")
+    assert pos["average_rank"] == round((1 + 1 + 2) / 3, 2)
     # should be sorted by average_rank
     avg_ranks = [r["average_rank"] for r in result]
     assert avg_ranks == sorted(avg_ranks)
@@ -172,13 +174,13 @@ def test_calculate_aggregate_rankings_basic():
 def test_calculate_aggregate_rankings_unknown_labels():
     label_to_agent = _make_label_to_agent()
     stage2_results = [
-        {"agent": "sentinel", "name": "Sentinel", "icon": "🛡️", "color": "#e74c3c",
+        {"agent": "leverage", "name": "Leverage Hunter", "icon": "⚡", "color": "#f39c12",
          "ranking": "FINAL RANKING:\n1. Response Z\n2. Response B"},  # Response Z unknown
     ]
     result = calculate_aggregate_rankings(stage2_results, label_to_agent)
-    # Only scout (Response B) should appear
+    # Only position (Response B) should appear
     assert len(result) == 1
-    assert result[0]["agent"] == "scout"
+    assert result[0]["agent"] == "position"
 
 
 def test_calculate_aggregate_rankings_empty():

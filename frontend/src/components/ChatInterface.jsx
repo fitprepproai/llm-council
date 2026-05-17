@@ -6,17 +6,17 @@ import Stage3 from './Stage3';
 import './ChatInterface.css';
 
 const AGENT_COLORS = {
-  sentinel: '#e74c3c',
-  scout: '#2ecc71',
-  historian: '#3498db',
-  mirror: '#9b59b6',
+  leverage: '#f39c12',
+  position: '#e74c3c',
+  architect: '#3498db',
+  freedom: '#2ecc71',
 };
 
 const AGENT_LABELS = {
-  sentinel: '🛡️ Sentinel',
-  scout: '🔭 Scout',
-  historian: '📚 Historian',
-  mirror: '🪞 Mirror',
+  leverage: '⚡ Leverage Hunter',
+  position: '♟️ Power Reader',
+  architect: '🏗️ The Architect',
+  freedom: '🔓 Liberation Auditor',
 };
 
 export default function ChatInterface({
@@ -54,10 +54,10 @@ export default function ChatInterface({
     return (
       <div className="chat-interface">
         <div className="empty-state">
-          <h2>Cognitive Council</h2>
+          <h2>Power Council</h2>
           <p>
-            Four specialized cognitive agents analyze your decision through distinct bias lenses —
-            then a Decompressor synthesizes what your instincts are actually telling you.
+            Four strategic advisors analyze your decision through the lens of the 48 Laws of Power —
+            then a Strategist synthesizes the path toward leverage, autonomy, and freedom from compulsory labor.
           </p>
           <div className="agent-legend">
             {Object.entries(AGENT_LABELS).map(([key, label]) => (
@@ -78,7 +78,7 @@ export default function ChatInterface({
         {conversation.messages.length === 0 ? (
           <div className="empty-state">
             <h2>Start your analysis</h2>
-            <p>Describe a decision, proposal, or situation. The council will decompress your instincts.</p>
+            <p>Describe a decision, career move, or situation. The council will map the leverage and the path to freedom.</p>
           </div>
         ) : (
           conversation.messages.map((msg, index) => (
@@ -94,12 +94,12 @@ export default function ChatInterface({
                 </div>
               ) : (
                 <div className="assistant-message">
-                  <div className="message-label">Cognitive Council</div>
+                  <div className="message-label">Power Council</div>
 
                   {msg.loading?.stage1 && (
                     <div className="stage-loading">
                       <div className="spinner"></div>
-                      <span>Stage 1 — Running cognitive analyses in parallel...</span>
+                      <span>Stage 1 — Running strategic analyses in parallel...</span>
                     </div>
                   )}
                   {msg.stage1 && <Stage1 responses={msg.stage1} />}
@@ -107,7 +107,7 @@ export default function ChatInterface({
                   {msg.loading?.stage2 && (
                     <div className="stage-loading">
                       <div className="spinner"></div>
-                      <span>Stage 2 — Running cross-examinations...</span>
+                      <span>Stage 2 — Running strategic cross-examinations...</span>
                     </div>
                   )}
                   {msg.stage2 && (
@@ -121,7 +121,7 @@ export default function ChatInterface({
                   {msg.loading?.stage3 && (
                     <div className="stage-loading">
                       <div className="spinner"></div>
-                      <span>Stage 3 — Generating decompression report...</span>
+                      <span>Stage 3 — Generating strategic power report...</span>
                     </div>
                   )}
                   {msg.stage3 && <Stage3 finalResponse={msg.stage3} />}
@@ -145,7 +145,7 @@ export default function ChatInterface({
         <form className="input-form" onSubmit={handleSubmit}>
           <textarea
             className="message-input"
-            placeholder="Describe your decision or situation... (Enter to send, Shift+Enter for new line)"
+            placeholder="Describe your decision, career move, or situation... (Enter to send, Shift+Enter for new line)"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}

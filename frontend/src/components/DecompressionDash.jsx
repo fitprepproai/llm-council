@@ -3,32 +3,57 @@ import SignalCards from './SignalCards';
 import './DecompressionDash.css';
 
 const AGENT_META = {
-  sentinel: { name: 'Sentinel', icon: '🛡️', color: '#e74c3c' },
-  scout: { name: 'Scout', icon: '🔭', color: '#2ecc71' },
-  historian: { name: 'Historian', icon: '📚', color: '#3498db' },
-  mirror: { name: 'Mirror', icon: '🪞', color: '#9b59b6' },
+  leverage: { name: 'Leverage Hunter', icon: '⚡', color: '#f39c12' },
+  position: { name: 'Power Reader', icon: '♟️', color: '#e74c3c' },
+  architect: { name: 'The Architect', icon: '🏗️', color: '#3498db' },
+  freedom: { name: 'Liberation Auditor', icon: '🔓', color: '#2ecc71' },
 };
+
+function LiberationMeter({ score }) {
+  if (score == null) return null;
+  const pct = Math.round(score * 100);
+  const color = pct >= 70 ? '#2ecc71' : pct >= 40 ? '#f39c12' : '#e74c3c';
+  const label = pct >= 70 ? 'Clear path to freedom' : pct >= 40 ? 'Partial leverage' : 'Foot-soldier trap';
+
+  return (
+    <div className="liberation-meter">
+      <div className="liberation-meter-header">
+        <div className="liberation-meter-title">Liberation Score</div>
+        <div className="liberation-meter-value" style={{ color }}>{pct}%</div>
+      </div>
+      <div className="liberation-bar-track">
+        <div
+          className="liberation-bar-fill"
+          style={{ width: `${pct}%`, background: color }}
+        />
+      </div>
+      <div className="liberation-meter-label" style={{ color }}>{label}</div>
+    </div>
+  );
+}
 
 export default function DecompressionDash({ decompressionData }) {
   if (!decompressionData) return null;
 
-  const { compression_map, tensions, recommendation_alignment } = decompressionData;
+  const { power_map, liberation_score, tensions, strategic_alignment } = decompressionData;
 
   return (
     <div className="decompression-dash">
       <div className="dash-header">
-        <div className="dash-title">Decision Intelligence Dashboard</div>
-        <div className="dash-subtitle">Cognitive compression analysis</div>
+        <div className="dash-title">Power Analysis Dashboard</div>
+        <div className="dash-subtitle">Strategic leverage & liberation analysis</div>
       </div>
 
+      {liberation_score != null && <LiberationMeter score={liberation_score} />}
+
       <div className="dash-grid">
-        <AgentRadarChart compressionMap={compression_map} />
-        <SignalCards compressionMap={compression_map} />
+        <AgentRadarChart powerMap={power_map} />
+        <SignalCards powerMap={power_map} />
       </div>
 
       {tensions && tensions.length > 0 && (
         <div className="tensions-section">
-          <div className="tensions-title">Key Tensions</div>
+          <div className="tensions-title">Strategic Tensions</div>
           <div className="tensions-list">
             {tensions.map((tension, i) => {
               const agentA = AGENT_META[tension.agent_a];
@@ -56,42 +81,40 @@ export default function DecompressionDash({ decompressionData }) {
         </div>
       )}
 
-      {recommendation_alignment && (
+      {strategic_alignment && (
         <div className="alignment-section">
-          <div className="alignment-title">Recommendation Alignment</div>
+          <div className="alignment-title">Strategic Alignment</div>
           <div className="alignment-row">
-            {recommendation_alignment.aligns_with &&
-              recommendation_alignment.aligns_with.length > 0 && (
-                <div className="alignment-group aligns">
-                  <span className="alignment-label">Aligns with</span>
-                  <div className="alignment-agents">
-                    {recommendation_alignment.aligns_with.map((key) => {
-                      const meta = AGENT_META[key];
-                      return meta ? (
-                        <span key={key} className="alignment-agent" style={{ color: meta.color }}>
-                          {meta.icon} {meta.name}
-                        </span>
-                      ) : null;
-                    })}
-                  </div>
+            {strategic_alignment.aligns_with && strategic_alignment.aligns_with.length > 0 && (
+              <div className="alignment-group aligns">
+                <span className="alignment-label">Aligns with</span>
+                <div className="alignment-agents">
+                  {strategic_alignment.aligns_with.map((key) => {
+                    const meta = AGENT_META[key];
+                    return meta ? (
+                      <span key={key} className="alignment-agent" style={{ color: meta.color }}>
+                        {meta.icon} {meta.name}
+                      </span>
+                    ) : null;
+                  })}
                 </div>
-              )}
-            {recommendation_alignment.overrides &&
-              recommendation_alignment.overrides.length > 0 && (
-                <div className="alignment-group overrides">
-                  <span className="alignment-label">Overrides</span>
-                  <div className="alignment-agents">
-                    {recommendation_alignment.overrides.map((key) => {
-                      const meta = AGENT_META[key];
-                      return meta ? (
-                        <span key={key} className="alignment-agent" style={{ color: meta.color }}>
-                          {meta.icon} {meta.name}
-                        </span>
-                      ) : null;
-                    })}
-                  </div>
+              </div>
+            )}
+            {strategic_alignment.overrides && strategic_alignment.overrides.length > 0 && (
+              <div className="alignment-group overrides">
+                <span className="alignment-label">Overrides</span>
+                <div className="alignment-agents">
+                  {strategic_alignment.overrides.map((key) => {
+                    const meta = AGENT_META[key];
+                    return meta ? (
+                      <span key={key} className="alignment-agent" style={{ color: meta.color }}>
+                        {meta.icon} {meta.name}
+                      </span>
+                    ) : null;
+                  })}
                 </div>
-              )}
+              </div>
+            )}
           </div>
         </div>
       )}

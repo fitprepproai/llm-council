@@ -9,8 +9,8 @@ export default function Sidebar({
   return (
     <div className="sidebar">
       <div className="sidebar-header">
-        <h1>Cognitive Council</h1>
-        <p className="sidebar-subtitle">Decision Intelligence</p>
+        <h1>Power Council</h1>
+        <p className="sidebar-subtitle">48 Laws of Power</p>
         <button className="new-conversation-btn" onClick={onNewConversation}>
           + New Analysis
         </button>

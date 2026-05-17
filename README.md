@@ -1,24 +1,49 @@
-# LLM Council
+# Cognitive Council
 
-![llmcouncil](header.jpg)
+> **"Karpathy built a council for better answers. This fork gives it a brain that works like ours actually does."**
 
-The idea of this repo is that instead of asking a question to your favorite LLM provider (e.g. OpenAI GPT 5.1, Google Gemini 3.0 Pro, Anthropic Claude Sonnet 4.5, xAI Grok 4, eg.c), you can group them into your "LLM Council". This repo is a simple, local web app that essentially looks like ChatGPT except it uses OpenRouter to send your query to multiple LLMs, it then asks them to review and rank each other's work, and finally a Chairman LLM produces the final response.
+A fork of [karpathy/llm-council](https://github.com/karpathy/llm-council) that replaces generic multi-model deliberation with **cognitively specialized agents** modeled after how human emotional compression works in decision-making.
 
-In a bit more detail, here is what happens when you submit a query:
+## The Core Idea
 
-1. **Stage 1: First opinions**. The user query is given to all LLMs individually, and the responses are collected. The individual responses are shown in a "tab view", so that the user can inspect them all one by one.
-2. **Stage 2: Review**. Each individual LLM is given the responses of the other LLMs. Under the hood, the LLM identities are anonymized so that the LLM can't play favorites when judging their outputs. The LLM is asked to rank them in accuracy and insight.
-3. **Stage 3: Final response**. The designated Chairman of the LLM Council takes all of the model's responses and compiles them into a single final answer that is presented to the user.
+Emotions are ultra-compacted decision trees — lossy compressions of experience that enable fast action but introduce systematic bias. When you have a gut feeling about a decision, four distinct heuristics are usually firing at once:
 
-## Vibe Code Alert
+- 🛡️ **Sentinel** — "Something could go wrong" (threat detection, loss aversion)
+- 🔭 **Scout** — "This could be huge" (opportunity detection, novelty bias)
+- 📚 **Historian** — "I've seen this before" (pattern matching, base rates)
+- 🪞 **Mirror** — "Does this feel like us?" (familiarity bias, comfort reasoning)
 
-This project was 99% vibe coded as a fun Saturday hack because I wanted to explore and evaluate a number of LLMs side by side in the process of [reading books together with LLMs](https://x.com/karpathy/status/1990577951671509438). It's nice and useful to see multiple responses side by side, and also the cross-opinions of all LLMs on each other's outputs. I'm not going to support it in any way, it's provided here as is for other people's inspiration and I don't intend to improve it. Code is ephemeral now and libraries are over, ask your LLM to change it in whatever way you like.
+The Cognitive Council runs all four of these lenses simultaneously, cross-examines them against each other, then produces a **Decompression Report** — a structured analysis of which instincts are firing, how calibrated they are for your specific decision, and where they conflict.
+
+## How It Works
+
+When you submit a decision or question, the pipeline runs three stages:
+
+1. **Stage 1 — Cognitive Analysis.** All four agents analyze your input in parallel. Each uses the same underlying model (`claude-sonnet-4.5`) but with a distinct system prompt encoding its cognitive bias. You see four tab-views: Sentinel's threat analysis, Scout's opportunity map, Historian's precedent review, and Mirror's familiarity audit.
+
+2. **Stage 2 — Cross-Examination.** Each agent reviews the other three agents' anonymized analyses through its own bias lens — evaluating substance, over-compression, and what others missed. Rankings are extracted.
+
+3. **Stage 3 — Decompression Report.** A chairman model synthesizes everything into a structured report:
+   - **Decision Summary** — what the core decision actually is
+   - **Compression Map** — what each gut instinct is telling you and how well-calibrated it is (HIGH/MEDIUM/LOW signal quality)
+   - **Key Tensions** — where the lenses directly conflict and what that reveals
+   - **Decompressed Recommendation** — synthesized recommendation with explicit reasoning about which instincts it follows vs. overrides
+   - **What to Investigate** — 2-3 specific things to check before committing
+
+The report also renders a **Decision Intelligence Dashboard** with a radar chart showing compression intensity per lens and signal quality cards.
+
+## Example Decisions to Try
+
+- *"Should we migrate our analytics platform from Snowflake to Databricks? Costs growing 20% YoY, ML team wants it, data engineering team is skeptical. $500K budget, end-of-quarter deadline."*
+- *"We're evaluating a candidate with strong technical skills but the team has mixed feelings about culture fit."*
+- *"Our biggest client wants us to build a custom feature that would take 3 months. Should we do it?"*
+- *"Should we adopt an AI coding assistant for the engineering team?"*
 
 ## Setup
 
 ### 1. Install Dependencies
 
-The project uses [uv](https://docs.astral.sh/uv/) for project management.
+The project uses [uv](https://docs.astral.sh/uv/) for Python and npm for the frontend.
 
 **Backend:**
 ```bash
@@ -40,48 +65,69 @@ Create a `.env` file in the project root:
 OPENROUTER_API_KEY=sk-or-v1-...
 ```
 
-Get your API key at [openrouter.ai](https://openrouter.ai/). Make sure to purchase the credits you need, or sign up for automatic top up.
+Get your API key at [openrouter.ai](https://openrouter.ai/).
 
-### 3. Configure Models (Optional)
+### 3. Configure the Base Model (Optional)
 
-Edit `backend/config.py` to customize the council:
+Edit `backend/config.py` to swap the underlying model all agents use:
 
 ```python
-COUNCIL_MODELS = [
-    "openai/gpt-5.1",
-    "google/gemini-3-pro-preview",
-    "anthropic/claude-sonnet-4.5",
-    "x-ai/grok-4",
-]
-
-CHAIRMAN_MODEL = "google/gemini-3-pro-preview"
+COGNITIVE_BASE_MODEL = "anthropic/claude-sonnet-4.5"
+CHAIRMAN_MODEL = "anthropic/claude-sonnet-4.5"
 ```
 
-## Running the Application
+Any OpenRouter model works. Use a cheaper model (e.g. `google/gemini-2.5-flash`) during development to reduce API costs.
 
-**Option 1: Use the start script**
+## Running
+
+**Option 1: Start script**
 ```bash
 ./start.sh
 ```
 
-**Option 2: Run manually**
+**Option 2: Manual**
 
-Terminal 1 (Backend):
+Terminal 1 (Backend — port 8001):
 ```bash
 uv run python -m backend.main
 ```
 
-Terminal 2 (Frontend):
+Terminal 2 (Frontend — port 5173):
 ```bash
 cd frontend
 npm run dev
 ```
 
-Then open http://localhost:5173 in your browser.
+Then open [http://localhost:5173](http://localhost:5173).
+
+## Running Tests
+
+```bash
+uv run pytest
+```
+
+Tests cover the parsing functions — decompression JSON extraction, ranking parsing, and aggregate score calculation — all of which run without API calls.
 
 ## Tech Stack
 
 - **Backend:** FastAPI (Python 3.10+), async httpx, OpenRouter API
-- **Frontend:** React + Vite, react-markdown for rendering
+- **Frontend:** React + Vite, Recharts (radar visualization), react-markdown
 - **Storage:** JSON files in `data/conversations/`
-- **Package Management:** uv for Python, npm for JavaScript
+- **Package Management:** uv (Python), npm (JavaScript)
+
+## Architecture
+
+```
+User Input
+    ↓
+Stage 1: 4 parallel queries → same model, 4 different system prompts
+         [🛡️ Sentinel] [🔭 Scout] [📚 Historian] [🪞 Mirror]
+    ↓
+Stage 2: Anonymized cross-examination → each agent critiques the others
+    ↓
+Stage 3: Chairman decompressor synthesizes report + JSON data block
+    ↓
+Frontend: Decompression dashboard (radar chart + signal cards + tensions)
+```
+
+The key architectural difference from the original: rather than querying multiple different LLMs, all four agents use the **same base model** differentiated entirely by system prompt. The insight lives in the prompts, not the models.

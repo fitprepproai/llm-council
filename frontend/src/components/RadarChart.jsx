@@ -9,8 +9,6 @@ import {
 } from 'recharts';
 import './RadarChart.css';
 
-const QUALITY_COLORS = { HIGH: '#2ecc71', MEDIUM: '#f39c12', LOW: '#e74c3c' };
-
 const AGENT_META = {
   sentinel: { label: '🛡️ Threat', color: '#e74c3c' },
   scout: { label: '🔭 Opportunity', color: '#2ecc71' },

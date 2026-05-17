@@ -142,8 +142,6 @@ async def stage3_synthesize_final(
         for result in stage2_results
     ])
 
-    agent_keys = [r['agent'] for r in stage1_results]
-
     chairman_prompt = f"""You are the Decompressor — the conscious, deliberate reasoning layer that sits above the four cognitive compression agents. You have received:
 
 1. Four analyses of a decision, each from a different cognitive bias lens (Sentinel/Threat, Scout/Opportunity, Historian/Pattern, Mirror/Familiarity)

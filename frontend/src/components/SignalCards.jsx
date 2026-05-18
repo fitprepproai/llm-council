@@ -1,10 +1,10 @@
 import './SignalCards.css';
 
 const AGENT_META = {
-  sentinel: { name: 'Sentinel', icon: '🛡️', color: '#e74c3c' },
-  scout: { name: 'Scout', icon: '🔭', color: '#2ecc71' },
-  historian: { name: 'Historian', icon: '📚', color: '#3498db' },
-  mirror: { name: 'Mirror', icon: '🪞', color: '#9b59b6' },
+  leverage: { name: 'Leverage Hunter', icon: '⚡', color: '#f39c12' },
+  position: { name: 'Power Reader', icon: '♟️', color: '#e74c3c' },
+  architect: { name: 'The Architect', icon: '🏗️', color: '#3498db' },
+  freedom: { name: 'Liberation Auditor', icon: '🔓', color: '#2ecc71' },
 };
 
 const QUALITY_CONFIG = {
@@ -13,16 +13,16 @@ const QUALITY_CONFIG = {
   LOW: { color: '#e74c3c', label: 'LOW', bg: 'rgba(231,76,60,0.12)' },
 };
 
-export default function SignalCards({ compressionMap }) {
-  if (!compressionMap) return null;
+export default function SignalCards({ powerMap }) {
+  if (!powerMap) return null;
 
   return (
     <div className="signal-cards-container">
       <div className="signal-cards-title">Signal Quality</div>
-      <div className="signal-cards-subtitle">How calibrated each instinct is for this decision</div>
+      <div className="signal-cards-subtitle">How well-calibrated each strategic lens is for this situation</div>
       <div className="signal-cards">
         {Object.entries(AGENT_META).map(([key, meta]) => {
-          const data = compressionMap[key];
+          const data = powerMap[key];
           if (!data) return null;
           const quality = QUALITY_CONFIG[data.quality] || QUALITY_CONFIG.MEDIUM;
           return (

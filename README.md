@@ -1,24 +1,50 @@
-# LLM Council
+# Power Council
 
-![llmcouncil](header.jpg)
+> **"Most people optimize within the prison. This tool shows you the door."**
 
-The idea of this repo is that instead of asking a question to your favorite LLM provider (e.g. OpenAI GPT 5.1, Google Gemini 3.0 Pro, Anthropic Claude Sonnet 4.5, xAI Grok 4, eg.c), you can group them into your "LLM Council". This repo is a simple, local web app that essentially looks like ChatGPT except it uses OpenRouter to send your query to multiple LLMs, it then asks them to review and rank each other's work, and finally a Chairman LLM produces the final response.
+A fork of [karpathy/llm-council](https://github.com/karpathy/llm-council) that transforms multi-model deliberation into a **strategic decision framework** grounded in Robert Greene's *48 Laws of Power* — focused specifically on the transition from compulsory labor to leverage, autonomy, and freedom.
 
-In a bit more detail, here is what happens when you submit a query:
+## The Problem It Solves
 
-1. **Stage 1: First opinions**. The user query is given to all LLMs individually, and the responses are collected. The individual responses are shown in a "tab view", so that the user can inspect them all one by one.
-2. **Stage 2: Review**. Each individual LLM is given the responses of the other LLMs. Under the hood, the LLM identities are anonymized so that the LLM can't play favorites when judging their outputs. The LLM is asked to rank them in accuracy and insight.
-3. **Stage 3: Final response**. The designated Chairman of the LLM Council takes all of the model's responses and compiles them into a single final answer that is presented to the user.
+Most career and business decisions are evaluated on surface metrics: salary, title, prestige, growth. But these metrics optimize for position within the foot-soldier economy — the game where you compete harder for incremental advancement while trading more time for marginally more money.
 
-## Vibe Code Alert
+The Power Council analyzes every decision through four lenses that most people never consciously apply:
 
-This project was 99% vibe coded as a fun Saturday hack because I wanted to explore and evaluate a number of LLMs side by side in the process of [reading books together with LLMs](https://x.com/karpathy/status/1990577951671509438). It's nice and useful to see multiple responses side by side, and also the cross-opinions of all LLMs on each other's outputs. I'm not going to support it in any way, it's provided here as is for other people's inspiration and I don't intend to improve it. Code is ephemeral now and libraries are over, ask your LLM to change it in whatever way you like.
+- **⚡ Leverage Hunter** — Where is the compounding leverage? What in this situation can be owned, systematized, or made scarce? (Law 11: Make others dependent on you)
+- **♟️ Power Reader** — Who actually holds power here, what do they want, and how does each path affect the dependency ratio? (Law 3: Conceal your intentions; Law 33: Find each person's pressure point)
+- **🏗️ The Architect** — Where does each path lead in 5-10 years if followed consistently? Which options build toward ownership vs. higher rungs on the same ladder? (Law 29: Plan all the way to the end)
+- **🔓 Liberation Auditor** — Does this option actually increase your autonomy and leisure, or does it optimize within the trap? (Law 20: Do not commit to anyone; Law 34: Be royal in your own fashion)
+
+## How It Works
+
+Submit a decision, career move, or situation. Three stages run automatically:
+
+1. **Stage 1 — Strategic Analysis.** All four advisors analyze your input in parallel. Each uses the same underlying model (`claude-sonnet-4.5`) but with a distinct system prompt encoding its power lens. Four tab-views: leverage map, power dynamics, long-game trajectory, liberation audit.
+
+2. **Stage 2 — Strategic Cross-Examination.** Each advisor critiques the other three's analyses — anonymized to prevent groupthink. Rankings extracted to see which lens identified the most actionable insight.
+
+3. **Stage 3 — Strategic Power Report.** A Strategist synthesizes everything into:
+   - **Situation Assessment** — where you actually stand in the power hierarchy
+   - **Power Map** — one signal per lens with confidence rating (HIGH/MEDIUM/LOW)
+   - **The Liberation Vector** — which option most directly points toward owning your time
+   - **Strategic Recommendation** — concrete moves, not general direction
+   - **The 3 Power Moves** — actions that increase leverage regardless of which choice you make
+
+   The report also renders a **Power Analysis Dashboard** with a radar chart showing signal intensity per lens, signal quality cards, and a **Liberation Score** (0–100%) measuring how directly the recommended path leads toward autonomy.
+
+## Example Decisions to Run
+
+- *"I have a $120K job offer at a FAANG company and a $90K offer plus 0.5% equity at a 20-person startup. Which do I take?"*
+- *"My manager keeps blocking my promotion. I've been passed over twice. What do I do?"*
+- *"I want to start a consulting practice on the side. Should I tell my employer?"*
+- *"I'm 35, have $80K saved, and want to stop trading time for money within 5 years. What's the move?"*
+- *"My biggest client wants me to take on 3x the work at the same rate. How do I handle this?"*
 
 ## Setup
 
 ### 1. Install Dependencies
 
-The project uses [uv](https://docs.astral.sh/uv/) for project management.
+The project uses [uv](https://docs.astral.sh/uv/) for Python and npm for the frontend.
 
 **Backend:**
 ```bash
@@ -40,48 +66,82 @@ Create a `.env` file in the project root:
 OPENROUTER_API_KEY=sk-or-v1-...
 ```
 
-Get your API key at [openrouter.ai](https://openrouter.ai/). Make sure to purchase the credits you need, or sign up for automatic top up.
+Get your API key at [openrouter.ai](https://openrouter.ai/).
 
-### 3. Configure Models (Optional)
+### 3. Configure the Base Model (Optional)
 
-Edit `backend/config.py` to customize the council:
+Edit `backend/config.py` to change the underlying model all advisors use:
 
 ```python
-COUNCIL_MODELS = [
-    "openai/gpt-5.1",
-    "google/gemini-3-pro-preview",
-    "anthropic/claude-sonnet-4.5",
-    "x-ai/grok-4",
-]
-
-CHAIRMAN_MODEL = "google/gemini-3-pro-preview"
+COGNITIVE_BASE_MODEL = "anthropic/claude-sonnet-4.5"
+CHAIRMAN_MODEL = "anthropic/claude-sonnet-4.5"
 ```
 
-## Running the Application
+Any OpenRouter model works. Use a cheaper model (e.g. `google/gemini-2.5-flash`) during development to reduce API costs.
 
-**Option 1: Use the start script**
+## Running
+
+**Option 1: Start script**
 ```bash
 ./start.sh
 ```
 
-**Option 2: Run manually**
+**Option 2: Manual**
 
-Terminal 1 (Backend):
+Terminal 1 (Backend — port 8001):
 ```bash
 uv run python -m backend.main
 ```
 
-Terminal 2 (Frontend):
+Terminal 2 (Frontend — port 5173):
 ```bash
 cd frontend
 npm run dev
 ```
 
-Then open http://localhost:5173 in your browser.
+Then open [http://localhost:5173](http://localhost:5173).
+
+## Running Tests
+
+```bash
+uv run pytest
+```
+
+Tests cover the parsing functions — strategic JSON extraction, ranking parsing, and aggregate score calculation — all without API calls.
+
+## Architecture
+
+```
+User Input (decision, career move, situation)
+    ↓
+Stage 1: 4 parallel queries → same model, 4 power-lens system prompts
+         [⚡ Leverage] [♟️ Power] [🏗️ Architect] [🔓 Liberation]
+    ↓
+Stage 2: Anonymized cross-examination → each advisor critiques the others
+    ↓
+Stage 3: The Strategist synthesizes → Strategic Power Report + JSON data
+    ↓
+Frontend: Power Analysis Dashboard
+         [Liberation Score meter] [Radar chart] [Signal quality cards]
+         [Strategic tensions] [Alignment summary]
+```
+
+All four advisors use the **same base model** differentiated entirely by system prompt. The intelligence is in the prompts, not model selection.
+
+## Intellectual Grounding
+
+The four advisors correspond to the most actionable themes in Robert Greene's *48 Laws of Power* as applied to economic freedom:
+
+| Advisor | Core Law(s) | The Question It Answers |
+|---------|-------------|------------------------|
+| Leverage Hunter | Law 11 (Make others dependent) | Where is the compounding leverage? |
+| Power Reader | Laws 1, 3, 5, 7, 33 | What is the hidden power game being played? |
+| The Architect | Law 29 (Plan to the end) | Where does this path actually lead? |
+| Liberation Auditor | Laws 20, 28, 34 | Does this increase or decrease your autonomy? |
 
 ## Tech Stack
 
 - **Backend:** FastAPI (Python 3.10+), async httpx, OpenRouter API
-- **Frontend:** React + Vite, react-markdown for rendering
+- **Frontend:** React + Vite, Recharts (radar visualization), react-markdown
 - **Storage:** JSON files in `data/conversations/`
-- **Package Management:** uv for Python, npm for JavaScript
+- **Package Management:** uv (Python), npm (JavaScript)

@@ -13,9 +13,9 @@ export default function Stage1({ responses }) {
 
   return (
     <div className="stage stage1">
-      <h3 className="stage-title">Stage 1 — Cognitive Analysis</h3>
+      <h3 className="stage-title">Stage 1 — Strategic Analysis</h3>
       <p className="stage-description">
-        Each agent analyzes the situation through its specialized cognitive lens.
+        Four strategic advisors analyze the situation through distinct power lenses.
       </p>
 
       <div className="tabs">
